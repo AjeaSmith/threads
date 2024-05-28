@@ -1,24 +1,24 @@
 import AccountProfile from "@/components/forms/AccountProfile";
+import { fetchUser } from "@/lib/actions/user.actions";
 
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 export default async function Page() {
 	const user = await currentUser();
+	if (!user) return null; // to avoid typescript warnings
 
-	if (!user) redirect("/sign-in");
-
-	// this will come from DB
-	const userInfo = {};
+	const userInfo = await fetchUser(user.id);
+	if (userInfo?.onboarded) redirect("/");
 
 	// data for account profile to use
 	const userData = {
-		id: user!.id,
-		objectId: user!.id,
-		username: user!.username || "",
-		name: user!.firstName || "",
-		bio: "",
-		image: user!.imageUrl,
+		id: user.id,
+		objectId: userInfo?._id,
+		username: userInfo ? userInfo?.username : user.username,
+		name: userInfo ? userInfo?.name : user.firstName ?? "",
+		bio: userInfo ? userInfo?.bio : "",
+		image: userInfo ? userInfo?.image : user.imageUrl,
 	};
 	return (
 		<main className="mx-auto px-10 py-20 flex flex-col max-w-3xl justify-start">
