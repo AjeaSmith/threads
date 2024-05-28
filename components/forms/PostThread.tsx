@@ -16,22 +16,16 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ThreadValidation } from "@/lib/validations/thread";
 import { createThread } from "@/lib/actions/thread.actions";
+import { useOrganization } from "@clerk/nextjs";
 
 type Props = {
-	user: {
-		id: string;
-		objectId: string;
-		username: string;
-		name: string;
-		bio: string;
-		image: string;
-	};
-	btnTitle: string;
+	userId: string;
 };
 
-export default function PostThread({ userId }: { userId: string }) {
+export default function PostThread({ userId }: Props) {
 	const pathname = usePathname();
 	const router = useRouter();
+	const { organization } = useOrganization();
 
 	const form = useForm({
 		resolver: zodResolver(ThreadValidation),
@@ -47,7 +41,7 @@ export default function PostThread({ userId }: { userId: string }) {
 		await createThread({
 			text: values.thread,
 			author: userId,
-			communityId: null,
+			communityId: organization ? organization.id : null,
 			path: pathname,
 		});
 

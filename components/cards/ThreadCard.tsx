@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import DeleteThread from "../forms/DeleteThread";
 
 type Props = {
 	id: string;
@@ -35,7 +36,6 @@ export default function ThreadCard({
 	comments,
 	isComment,
 }: Props) {
-	console.log(author);
 	return (
 		<article
 			className={`flex w-full flex-col rounded-xl ${
@@ -114,13 +114,13 @@ export default function ThreadCard({
 					</div>
 				</div>
 
-				{/* <DeleteThread
+				<DeleteThread
 					threadId={JSON.stringify(id)}
 					currentUserId={currentUserId}
 					authorId={author.id}
 					parentId={parentId}
 					isComment={isComment}
-				/> */}
+				/>
 			</div>
 
 			{!isComment && comments.length > 0 && (
